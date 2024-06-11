@@ -6,6 +6,8 @@ import cv2
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 mp_drawing_styles = mp.solutions.drawing_styles
+from picamera2.encoders import H264Encoder
+from picamera2.outputs import FfmpegOutput
 
 # Initialize the pi camera
 pi_camera = Picamera2()
@@ -66,6 +68,17 @@ def main():
 	TODO Task 3
 		modify this function further to loop and show a video
 	'''
+
+	video_config = pi_camera.create_video_configuration()
+	pi_camera.configure(video_config)
+
+	encoder = H264Encoder(10000000)
+	output = FfmpegOutput('test.mp4', audio=False)
+
+	pi_camera.start_recording(encoder, output)
+	time.sleep(30)
+	pi_camera.stop_recording()
+
 	cap = cv2.VideoCapture('test.mp4')
 	imgs = []
 	vid_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
