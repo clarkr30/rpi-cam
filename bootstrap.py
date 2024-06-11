@@ -1,17 +1,17 @@
 # Imports
 import mediapipe as mp
-from picamera2 import Picamera2
+# from picamera2 import Picamera2
 import time
 import cv2
 
 # Initialize the pi camera
-pi_camera = Picamera2()
+# pi_camera = Picamera2()
 # Convert the color mode to RGB
-config = pi_camera.create_preview_configuration(main={"format": "RGB888"})
-pi_camera.configure(config)
+# config = pi_camera.create_preview_configuration(main={"format": "RGB888"})
+# pi_camera.configure(config)
 
 # Start the pi camera and give it a second to set up
-pi_camera.start()
+# pi_camera.start()
 time.sleep(1)
 
 def draw_pose(image, landmarks):
@@ -39,6 +39,12 @@ def draw_pose(image, landmarks):
 	
 	# get the dimensions of the image
 	height, width, _ = image.shape
+
+	landmarks_list = landmarks.pose_landmarks
+
+	for i in range(len(landmarks)):
+		pose_landmarks = landmarks[i]
+
 	
 	
 	return landmark_image
