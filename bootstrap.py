@@ -96,7 +96,8 @@ def main():
 
 				print("Processing Frame #" + str(frameNum) + "/" + str(vid_length))
 
-				image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+				# image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+				image = frame
 
 				if(height < 0 or width < 0):
 					height,width, = image[1].shape
@@ -114,8 +115,8 @@ def main():
 					imgs.append(image)
 				frameNum += 1
 			print(len(imgs))
-			fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-			video=cv2.VideoWriter('outputVideo.avi',fourcc,15,(width,height))
+			fourcc = cv2.VideoWriter_fourcc(*'XVID')
+			video=cv2.VideoWriter('outputVideo.avi',fourcc,30,(int(cap.get(3)),int(cap.get(4))))
 			for i in range(len(imgs)):
 				video.write(imgs[i])
 			video.release()
