@@ -113,8 +113,9 @@ def main():
 					# print('No Pose Detected')
 					imgs.append(image)
 				frameNum += 1
-			fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-			video=cv2.VideoWriter('outputVideo.mp4',fourcc,15,(width,height))
+			print(len(imgs))
+			fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+			video=cv2.VideoWriter('outputVideo.avi',fourcc,15,(width,height))
 			for i in range(len(imgs)):
 				video.write(imgs[i])
 			video.release()
