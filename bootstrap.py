@@ -1,17 +1,20 @@
 # Imports
 import mediapipe as mp
-# from picamera2 import Picamera2
+from picamera2 import Picamera2
 import time
 import cv2
+mp_drawing = mp.solutions.drawing_utils
+mp_pose = mp.solutions.pose
+mp_drawing_styles = mp.solutions.drawing_styles
 
 # Initialize the pi camera
-# pi_camera = Picamera2()
+pi_camera = Picamera2()
 # Convert the color mode to RGB
-# config = pi_camera.create_preview_configuration(main={"format": "RGB888"})
-# pi_camera.configure(config)
+config = pi_camera.create_preview_configuration(main={"format": "RGB888"})
+pi_camera.configure(config)
 
 # Start the pi camera and give it a second to set up
-# pi_camera.start()
+pi_camera.start()
 time.sleep(1)
 
 def draw_pose(image, landmarks):
@@ -40,13 +43,12 @@ def draw_pose(image, landmarks):
 	# get the dimensions of the image
 	height, width, _ = image.shape
 
-	landmarks_list = landmarks.pose_landmarks
+	mp_drawing.draw_landmarks(
+        landmark_image,
+        landmarks,
+        mp_pose.POSE_CONNECTIONS,
+        landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
 
-	for i in range(len(landmarks)):
-		pose_landmarks = landmarks[i]
-
-	
-	
 	return landmark_image
 
 def main():
@@ -54,7 +56,13 @@ def main():
 	TODO Task 2
 		modify this fucntion to take a photo uses the pi camera instead 
 		of loading an image
+	'''
+	
+	image = pi_camera.capture_array()
+	cv2.imwrite('input.png', image)
 
+
+	'''
 	TODO Task 3
 		modify this function further to loop and show a video
 	'''
@@ -68,7 +76,7 @@ def main():
 			min_tracking_confidence=0.5) as pose:
 
 		# load test image
-		image = cv2.imread("person.png")	
+		# image = cv2.imread("input.png")
 
 		# To improve performance, optionally mark the image as not 
 		# writeable to pass by reference.
