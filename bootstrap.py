@@ -66,6 +66,13 @@ def main():
 	TODO Task 3
 		modify this function further to loop and show a video
 	'''
+	cap = cv2.VideoCapture('test.mp4')
+	imgs = []
+	vid_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+	frameNum = 0
+
+	height = -1
+	width = -1
 
 	# Create a pose estimation model 
 	mp_pose = mp.solutions.pose
@@ -75,23 +82,42 @@ def main():
 			min_detection_confidence=0.5,
 			min_tracking_confidence=0.5) as pose:
 
-		# load test image
-		# image = cv2.imread("input.png")
+			# load test image
+			# image = cv2.imread("input.png")
 
-		# To improve performance, optionally mark the image as not 
-		# writeable to pass by reference.
-		image.flags.writeable = False
-		
-		# get the landmarks
-		results = pose.process(image)
-		
-		if results.pose_landmarks != None:
-			result_image = draw_pose(image, results.pose_landmarks)
-			cv2.imwrite('output.png', result_image)
-			print(results.pose_landmarks)
-		else:
-			print('No Pose Detected')
+			# To improve performance, optionally mark the image as not 
+			# writeable to pass by reference.
+			image.flags.writeable = False
+			
+			while cap.isOpened():
+				ret, frame = cap.read()
+				if not ret:
+					break
 
+				print("Processing Frame #" + str(frameNum) + "/" + str(vid_length))
+
+				image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+				if(height < 0 or width < 0):
+					height,width, = image[1].shape
+
+				# get the landmarks
+				results = pose.process(image)
+				
+				if results.pose_landmarks != None:
+					result_image = draw_pose(image, results.pose_landmarks)
+					cv2.imwrite('output.png', result_image)
+					imgs.append(result_image)
+					# print(results.pose_landmarks)
+				else:
+					# print('No Pose Detected')
+					imgs.append(image)
+				frameNum += 1
+			fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+			video=cv2.VideoWriter('outputVideo.mp4',fourcc,15,(width,height))
+			for i in range(len(imgs)):
+				video.write(imgs[i])
+			video.release()
 
 if __name__ == "__main__":
 	main()
